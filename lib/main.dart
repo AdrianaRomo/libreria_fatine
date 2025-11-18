@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'pages/book_detail.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'models/book.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-
 
 void main() {
   runApp(const LibreriaFatineApp());
@@ -21,7 +21,7 @@ class LibreriaFatineApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
@@ -50,78 +50,134 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ["Ciencia ficción", "Drama", "Thriller", "Tecnología"];
+    final categories = ["Drama y Romance", "Autobiografía", "Epopeya", "Fantasía"];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Librería Abejita"),
+        title: const Text("Librería Abejita"),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
       body: FutureBuilder<List<Book>>(
         future: booksFuture,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error al cargar los libros'));
           }
 
           final books = snapshot.data!;
 
-          return SingleChildScrollView(
-            child: Column(
-              children: categories.map((cat) {
-                final filtered =
-                books.where((b) => b.category == cat).toList();
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final filteredBooks =
+              books.where((b) => b.category == category).toList();
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 20),
-                    Text(cat, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 260,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: filtered.length,
-                        itemBuilder: (context, i) {
-                          final book = filtered[i];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (_) => BookDetailPage(book: book)),
-                              );
-                            },
-                            child: Container(
-                              width: 180,
-                              margin: const EdgeInsets.only(right: 12),
-                              child: Card(
-                                child: Column(
-                                  children: [
-                                    Image.network(book.image, height: 150, fit: BoxFit.cover),
-                                    Padding(
-                                      padding: EdgeInsets.all(8),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(book.title),
-                                          Text(book.author, style: TextStyle(color: Colors.grey)),
-                                          Text("\$${book.price}", style: TextStyle(fontWeight: FontWeight.bold)),
-                                        ],
+              if (filteredBooks.isEmpty) return const SizedBox.shrink();
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      category,
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 260,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: filteredBooks.length,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemBuilder: (context, i) {
+                        final book = filteredBooks[i];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => BookDetailPage(book: book)),
+                            );
+                          },
+                          child: Container(
+                            width: 180,
+                            margin: const EdgeInsets.only(right: 12),
+                            child: Card(
+                              elevation: 3,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(10)),
+                                    child: CachedNetworkImage(
+                                      imageUrl: book.image,
+                                      height: 150,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      placeholder: (_, __) => SizedBox(
+                                        height: 150,
+                                        child: Center(
+                                          child:
+                                          CircularProgressIndicator(strokeWidth: 2),
+                                        ),
                                       ),
+                                      errorWidget: (_, __, ___) =>
+                                      const Icon(Icons.error, size: 50),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          book.title,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          book.author,
+                                          style: const TextStyle(
+                                              fontSize: 12, color: Colors.grey),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Text(
+                                          "\$${book.price}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                );
-              }).toList(),
-            ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              );
+            },
           );
         },
       ),
