@@ -43,5 +43,14 @@
     "category": "Tecnología",
     "format": "eBook",
     "description": "Un hacker descubre un programa que nadie admite haber escrito."
+  },
+  {
+    "title": "Hola mundo",
+    "author": "Ewar Alechis",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 90.00,
+    "category": "Ciencia ficción",
+    "format": "Kindle",
+    "description": "Una historia sobre la creación de un ídolo sintético y sus peligros."
   }
 ]
