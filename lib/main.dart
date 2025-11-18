@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ["Ciencia ficción", "Drama", "Thriller", "Tecnología", "Videojuegos"];
+    final categories = ["Ciencia ficción", "Drama", "Thriller", "Tecnología"];
 
     return Scaffold(
       appBar: AppBar(
