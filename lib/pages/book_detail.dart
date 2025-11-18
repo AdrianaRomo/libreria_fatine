@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/book.dart';
 
 class BookDetailPage extends StatelessWidget {
@@ -18,33 +19,57 @@ class BookDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            // ---------- IMAGEN PRINCIPAL ----------
             Hero(
               tag: book.title,
-              child: Image.network(
-                book.image,
+              child: CachedNetworkImage(
+                imageUrl: book.image,
                 height: 350,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                placeholder: (_, __) => SizedBox(
+                  height: 350,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: (_, __, ___) => Icon(Icons.error, size: 50),
               ),
             ),
 
+            // ---------- CONTENIDO ----------
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(book.title,
-                      style: const TextStyle(
-                          fontSize: 26, fontWeight: FontWeight.bold)),
+
+                  // Título
+                  Text(
+                    book.title,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
                   const SizedBox(height: 6),
+
+                  // Autor
                   Text(
                     "de ${book.author}",
-                    style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
                   ),
+
                   const SizedBox(height: 12),
 
+                  // Precio
                   Text(
-                    "\$${book.price.toStringAsFixed(2)}",
+                    "\$${double.tryParse(book.price.toString())?.toStringAsFixed(2) ?? book.price}",
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -54,18 +79,26 @@ class BookDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
+                  // Título descripción
                   const Text(
                     "Descripción del producto",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+
                   const SizedBox(height: 8),
 
-                  Text(book.description,
-                    style: TextStyle(fontSize: 16, height: 1.4),
+                  // Descripción
+                  Text(
+                    book.description,
+                    style: const TextStyle(fontSize: 16, height: 1.4),
                   ),
 
                   const SizedBox(height: 30),
 
+                  // ---------- BOTÓN COMPRAR ----------
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -76,7 +109,9 @@ class BookDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        // Acción para comprar
+                      },
                       child: const Text(
                         "Comprar ahora",
                         style: TextStyle(fontSize: 20, color: Colors.white),
@@ -86,6 +121,7 @@ class BookDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 12),
 
+                  // ---------- BOTÓN CARRITO ----------
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -96,7 +132,9 @@ class BookDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        // Acción para carrito
+                      },
                       child: const Text(
                         "Agregar al carrito",
                         style: TextStyle(fontSize: 20, color: Colors.black),

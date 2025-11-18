@@ -2,7 +2,7 @@ class Book {
   final String title;
   final String author;
   final String image;
-  final double price;
+  final String price;
   final String category;
   final String format;
   final String description;
@@ -19,13 +19,13 @@ class Book {
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-      title: json['title'],
-      author: json['author'],
-      image: json['image'],
-      price: (json['price'] as num).toDouble(),
-      category: json['category'],
-      format: json['format'],
-      description: json['format'],
+      title: json['title'] ?? '',
+      author: json['author'] ?? '',
+      image: json['image'] ?? '',
+      price: json['price']?.toString() ?? '0',
+      category: json['category'] ?? '',
+      format: json['format'] ?? '',
+      description: json['description'] ?? '',
     );
   }
 }
