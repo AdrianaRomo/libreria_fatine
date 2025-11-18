@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Librería Fatine"),
+        title: Text("Librería Abejita"),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
