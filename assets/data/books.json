@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Ídolo Artificial",
+    "author": "Iñaki Sierra",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 90.00,
+    "category": "Ciencia ficción",
+    "format": "Kindle",
+    "description": "Una historia sobre la creación de un ídolo sintético y sus peligros."
+  },
+  {
+    "title": "El Algoritmo de Dios",
+    "author": "Raúl Martínez",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 59.99,
+    "category": "Ciencia ficción",
+    "format": "eBook",
+    "description": "Una IA que predice el futuro desata una guerra global de información."
+  },
+  {
+    "title": "Memorias del Futuro",
+    "author": "Lucía Vega",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 72.00,
+    "category": "Drama",
+    "format": "Kindle",
+    "description": "Un viaje emocional entre recuerdos que aún no han sucedido."
+  },
+  {
+    "title": "Nudo Temporal",
+    "author": "Marcos Vidal",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 50.00,
+    "category": "Thriller",
+    "format": "Kindle",
+    "description": "Un científico queda atrapado en un ciclo temporal mortal."
+  },
+  {
+    "title": "Código Fantasma",
+    "author": "Diego Torres",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1024px-JSON_vector_logo.svg.png",
+    "price": 45.99,
+    "category": "Tecnología",
+    "format": "eBook",
+    "description": "Un hacker descubre un programa que nadie admite haber escrito."
+  }
+]
