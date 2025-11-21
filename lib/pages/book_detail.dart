@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
+import '../models/cart.dart';
 import '../models/book.dart';
 
 class BookDetailPage extends StatelessWidget {
@@ -11,9 +13,10 @@ class BookDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(book.title),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
+        title: Text(book.title,style: TextStyle(fontWeight: FontWeight.bold),),
+        backgroundColor: Colors.yellow[700],
+        foregroundColor: Colors.black,
+        elevation: 2,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -133,7 +136,15 @@ class BookDetailPage extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // Acción para carrito
+                        final cart = Provider.of<CartModel>(context, listen: false);
+                        cart.add(book);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('${book.title} agregado al carrito'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Agregar al carrito",

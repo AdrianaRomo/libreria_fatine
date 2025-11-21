@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:libreria_fatine/models/book.dart';
-
+import 'package:libreria_fatine/models/cart.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -13,9 +13,13 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carrito de Compras'),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
+        title: const Text(
+          'Carrito de Compras',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.yellow[700],
+        foregroundColor: Colors.black,
+        elevation: 2,
       ),
       body: cart.items.isEmpty
           ? const Center(
@@ -54,6 +58,15 @@ class CartPage extends StatelessWidget {
           : Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow[700],
+            foregroundColor: Colors.black,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
           onPressed: () {
             // Aquí podrías agregar la funcionalidad de "pagar"
             showDialog(
