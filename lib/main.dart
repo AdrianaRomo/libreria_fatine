@@ -1,12 +1,20 @@
-import 'package:flutter/material.dart';
-import 'pages/book_detail.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'models/book.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
+import 'models/cart.dart';
+import 'models/book.dart';
+import 'pages/book_detail.dart';
+import 'pages/cart_page.dart';
 
 void main() {
-  runApp(const LibreriaFatineApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CartModel(),
+      child: const LibreriaFatineApp(),
+    ),
+  );
 }
 
 class LibreriaFatineApp extends StatelessWidget {
@@ -15,13 +23,16 @@ class LibreriaFatineApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Librería Fatine',
+      title: 'Librería Abejita',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
       home: const HomeScreen(),
+      routes: {
+        '/cart': (_) => const CartPage(),
+      },
     );
   }
 }
@@ -54,9 +65,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Librería Abejita"),
-        backgroundColor: Colors.indigo,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.yellow[700], // Amarillo abeja 🐝
+        foregroundColor: Colors.black,
+        title: const Text(
+          "Librería Abejita",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          // Carrito con contador
+          Consumer<CartModel>(
+            builder: (context, cart, child) {
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.shopping_cart_outlined),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/cart');
+                    },
+                  ),
+                  // Contador del carrito
+                  if (cart.items.isNotEmpty)
+                    Positioned(
+                      right: 6,
+                      top: 6,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Text(
+                          cart.items.length.toString(),
+                          style: const TextStyle(
+                            color: Colors.yellow,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          )
+        ],
       ),
       body: FutureBuilder<List<Book>>(
         future: booksFuture,
