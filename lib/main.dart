@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'models/cart.dart';
 import 'models/book.dart';
 import 'pages/book_detail.dart';
+import 'pages/qr_scanner_page.dart';
 import 'pages/cart_page.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(
@@ -54,9 +56,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Book>> loadBooks() async {
-    final jsonString = await rootBundle.loadString("assets/data/books.json");
-    final List<dynamic> data = jsonDecode(jsonString);
-    return data.map((e) => Book.fromJson(e)).toList();
+    final url = Uri.parse("http://192.168.1.77/api/api.php");
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => Book.fromJson(e)).toList();
+    } else {
+      throw Exception("Error al cargar los libros de la API");
+    }
   }
 
   @override
@@ -72,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.qr_code_scanner),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const QRScannerPage()),
+              );
+            },
+          ),
           // Carrito con contador
           Consumer<CartModel>(
             builder: (context, cart, child) {
