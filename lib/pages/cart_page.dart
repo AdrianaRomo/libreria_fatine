@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:libreria_fatine/models/book.dart';
 import 'package:libreria_fatine/models/cart.dart';
+import 'package:libreria_fatine/pages/login_page.dart';
+import 'package:libreria_fatine/services/auth_service.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -67,8 +69,16 @@ class CartPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () {
-            // Aquí podrías agregar la funcionalidad de "pagar"
+          onPressed: () async {
+            final userId = await AuthService.getUserId();
+
+            if (userId == null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginPage(fromCart: true)),
+              );
+              return;
+            }
             showDialog(
               context: context,
               builder: (_) => AlertDialog(

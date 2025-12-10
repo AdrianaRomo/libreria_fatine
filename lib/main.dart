@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'models/cart.dart';
@@ -56,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Book>> loadBooks() async {
-    final url = Uri.parse("http://192.168.1.77/api/api.php");
+    final url = Uri.parse("http://25.3.18.26/api/api.php");
 
     final response = await http.get(url);
 

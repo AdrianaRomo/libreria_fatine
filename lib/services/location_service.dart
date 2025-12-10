@@ -1,0 +1,47 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../models/location_model.dart';
+
+class LocationService {
+  static const String baseUrl = "http://TU_IP"; // cambia TU_IP
+
+  static Future<List<LocationModel>> getUserLocations(int userId) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/get_locations.php"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"user_id": userId}),
+    );
+
+    final List data = jsonDecode(response.body);
+    return data.map((e) => LocationModel.fromJson(e)).toList();
+  }
+
+  static Future<bool> saveLocation(int userId, double lat, double lng) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/save_location.php"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "user_id": userId,
+        "lat": lat,
+        "lng": lng,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    return data["status"] == "success";
+  }
+
+  static Future<bool> hasLocation(int userId) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/check_user_locations.php"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"user_id": userId}),
+    );
+
+    final data = jsonDecode(response.body);
+    if (data["status"] == "success") {
+      return data["has_location"] == true;
+    }
+    return false;
+  }
+}
