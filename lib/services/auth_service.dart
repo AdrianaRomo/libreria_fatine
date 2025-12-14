@@ -31,6 +31,11 @@ class AuthService {
     return prefs.getString(keyUserEmail);
   }
 
+  static Future<String?> getUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keyUserName);
+  }
+
   // Saber si tiene ubicación
   static Future<bool> hasLocation() async {
     final prefs = await SharedPreferences.getInstance();

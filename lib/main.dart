@@ -265,6 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
 void _openAccountMenu(BuildContext context) async {
   final userId = await AuthService.getUserId();
   final userEmail = await AuthService.getUserEmail(); // opcional
+  final userName = await AuthService.getUserName();
 
   if (userId == null) {
     Navigator.push(
@@ -296,7 +297,7 @@ void _openAccountMenu(BuildContext context) async {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      userEmail ?? 'Usuario #$userId',
+                      userName ?? 'Usuario #$userId',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
