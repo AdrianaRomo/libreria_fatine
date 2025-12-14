@@ -17,7 +17,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   bool scanned = false;
 
   Future<Book?> fetchBookById(String id) async {
-    final url = Uri.parse("http://192.168.1.77/api/query_book.php?id=$id");
+    final url = Uri.parse("http://192.168.1.35/api/query_book.php?id=$id");
 
     final res = await http.get(url);
 

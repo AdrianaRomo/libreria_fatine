@@ -4,6 +4,7 @@ import 'package:libreria_fatine/models/book.dart';
 import 'package:libreria_fatine/models/cart.dart';
 import 'package:libreria_fatine/pages/login_page.dart';
 import 'package:libreria_fatine/services/auth_service.dart';
+import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -72,28 +73,47 @@ class CartPage extends StatelessWidget {
           onPressed: () async {
             final userId = await AuthService.getUserId();
 
+            // Si no está logueado
             if (userId == null) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const LoginPage(fromCart: true)),
+                MaterialPageRoute(
+                  builder: (_) => const LoginPage(fromCart: true),
+                ),
               );
               return;
             }
+
+            //Ir a la pantalla de direcciones
+            final selectedLocation = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => LocationTabsPage(userId: userId),
+              ),
+            );
+
+            // Si no seleccionó nada
+            if (selectedLocation == null) return;
+
+            // Confirmar compra
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
                 title: const Text('Compra completada'),
                 content: Text(
-                    'Has comprado ${cart.items.length} libro(s) por \$${cart.totalPrice.toStringAsFixed(2)}'),
+                  'Libros: ${cart.items.length}\n'
+                      'Dirección: ${selectedLocation['address']}\n'
+                      'Total: \$${cart.totalPrice.toStringAsFixed(2)}',
+                ),
                 actions: [
                   TextButton(
                     onPressed: () {
                       cart.clear();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(); // dialog
+                      Navigator.of(context).pop(); // carrito
                     },
                     child: const Text('OK'),
-                  )
+                  ),
                 ],
               ),
             );
@@ -104,3 +124,6 @@ class CartPage extends StatelessWidget {
     );
   }
 }
+
+
+

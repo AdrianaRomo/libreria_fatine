@@ -4,6 +4,8 @@ import 'dart:convert';
 import '/services/auth_service.dart';
 import 'location/location_tabs_page.dart';
 import '/services/location_service.dart';
+import 'register_page.dart';
+
 
 class LoginPage extends StatefulWidget {
   final bool fromCart; // si viene de intentar comprar
@@ -31,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse("http://25.3.18.26/api/login.php");
+    final url = Uri.parse("http://192.168.1.35/api/login.php");
     final res = await http.post(url, body: {
       "email": email,
       "password": pass,
@@ -55,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       await AuthService.saveSession(
         id: user["id"].toString(),
         name: user["name"],
+        email: user["email"].toString(),
         hasLocation: user["has_location"] == 1,
       );
 
@@ -84,6 +87,7 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text("Iniciar Sesión"),
         backgroundColor: Colors.yellow[700],
         foregroundColor: Colors.black,
+        automaticallyImplyLeading: widget.fromCart,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -106,6 +110,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            // 🔹 BOTÓN ENTRAR
             ElevatedButton(
               onPressed: isLoading ? null : loginUser,
               style: ElevatedButton.styleFrom(
@@ -117,6 +123,30 @@ class _LoginPageState extends State<LoginPage> {
               child: isLoading
                   ? const CircularProgressIndicator(color: Colors.black)
                   : const Text("Entrar", style: TextStyle(fontSize: 16)),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 🔹 CREAR CUENTA
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("¿No tienes cuenta? "),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const RegisterPage(),
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Crear cuenta",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

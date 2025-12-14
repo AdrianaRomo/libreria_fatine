@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/location_model.dart';
 
 class LocationService {
-  static const String baseUrl = "http://TU_IP"; // cambia TU_IP
+  static const String baseUrl = "http://192.168.1.35"; // cambia TU_IP
 
   static Future<List<LocationModel>> getUserLocations(int userId) async {
     final response = await http.post(

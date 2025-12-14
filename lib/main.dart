@@ -8,6 +8,8 @@ import 'pages/book_detail.dart';
 import 'pages/qr_scanner_page.dart';
 import 'pages/cart_page.dart';
 import 'package:http/http.dart' as http;
+import 'services/auth_service.dart';
+import 'pages/login_page.dart';
 
 void main() {
   runApp(
@@ -55,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Book>> loadBooks() async {
-    final url = Uri.parse("http://25.3.18.26/api/api.php");
+    final url = Uri.parse("http://192.168.1.35/api/api.php");
 
     final response = await http.get(url);
 
@@ -87,6 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 MaterialPageRoute(builder: (_) => const QRScannerPage()),
               );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.account_circle),
+            onPressed: () {
+              _openAccountMenu(context);
             },
           ),
           // Carrito con contador
@@ -252,4 +260,87 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+void _openAccountMenu(BuildContext context) async {
+  final userId = await AuthService.getUserId();
+  final userEmail = await AuthService.getUserEmail(); // opcional
+
+  if (userId == null) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const LoginPage(fromCart: true),
+      ),
+    );
+    return; // ⛔ importante: no seguir
+  }
+
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.account_circle, size: 40),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userEmail ?? 'Usuario #$userId',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text(
+                      'Sesión activa',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+            const Divider(height: 30),
+
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Cerrar sesión'),
+              onTap: () async {
+                await AuthService.logout();
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage(fromCart: true)),
+                );
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.switch_account),
+              title: const Text('Cambiar cuenta'),
+              onTap: () async {
+                await AuthService.logout();
+                Navigator.pop(context);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginPage(fromCart: true)),
+                );
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

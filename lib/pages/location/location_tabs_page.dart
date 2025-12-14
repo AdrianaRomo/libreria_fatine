@@ -13,6 +13,8 @@ class LocationTabsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.yellow[700], // Amarillo abeja 🐝
+          foregroundColor: Colors.black,
           title: const Text("Mis ubicaciones"),
           bottom: const TabBar(
             tabs: [
