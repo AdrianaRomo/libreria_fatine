@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
 import 'location/location_tabs_page.dart';
-import '/services/location_service.dart';
 import 'register_page.dart';
+import '/config/api_config.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse("http://192.168.1.35/api/login.php");
+    final url = Uri.parse("${ApiConfig.baseUrl}/login.php");
     final res = await http.post(url, body: {
       "email": email,
       "password": pass,

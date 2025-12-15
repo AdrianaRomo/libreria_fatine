@@ -86,6 +86,17 @@ class BookDetailPage extends StatelessWidget {
                     ),
                   ),
 
+                  const SizedBox(height: 5),
+
+                  // AStock
+                  Text(
+                    "Unidades Disponibles: ${book.qty}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+
                   const SizedBox(height: 20),
 
                   // Título descripción
