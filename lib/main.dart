@@ -11,6 +11,8 @@ import 'package:http/http.dart' as http;
 import 'services/auth_service.dart';
 import 'pages/login_page.dart';
 import '/config/api_config.dart';
+import 'pages/book_search_delegate.dart';
+
 
 void main() {
   runApp(
@@ -20,7 +22,6 @@ void main() {
     ),
   );
 }
-
 class LibreriaFatineApp extends StatelessWidget {
   const LibreriaFatineApp({super.key});
 
@@ -41,6 +42,11 @@ class LibreriaFatineApp extends StatelessWidget {
   }
 }
 
+
+List<Book> allBooks = [];
+List<Book> filteredBooks = [];
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -49,6 +55,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Book> allBooks = [];
   late Future<List<Book>> booksFuture;
 
   @override
@@ -57,18 +64,25 @@ class _HomeScreenState extends State<HomeScreen> {
     booksFuture = loadBooks();
   }
 
-  Future<List<Book>> loadBooks() async {
-    final url = Uri.parse("${ApiConfig.baseUrl}/api.php");
 
+  Future<List<Book>> loadBooks() async {
+    final url = Uri.parse("http://192.168.1.35/api/api.php");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      return data.map((e) => Book.fromJson(e)).toList();
+      final books = data.map((e) => Book.fromJson(e)).toList();
+
+      // 🔥 AQUÍ SE LLENA allBooks
+      allBooks = books;
+
+      return books;
     } else {
-      throw Exception("Error al cargar los libros de la API");
+      throw Exception("Error al cargar los libros");
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +97,28 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
+      IconButton(
+      icon: const Icon(Icons.search),
+      onPressed: () async {
+        if (allBooks.isEmpty) return;
+
+        final result = await showSearch<Book?>(
+          context: context,
+          delegate: BookSearchDelegate(allBooks),
+        );
+
+        if (result != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BookDetailPage(book: result),
+            ),
+          );
+        }
+      },
+    ),
+
+
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),
             onPressed: () {
@@ -92,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             },
           ),
+
           IconButton(
             icon: const Icon(Icons.account_circle),
             onPressed: () {
