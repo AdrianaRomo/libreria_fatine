@@ -21,6 +21,10 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
     final res = await http.get(url);
 
+    print("URL: $url");
+    print("STATUS: ${res.statusCode}");
+    print("BODY: ${res.body}");
+
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body);
 

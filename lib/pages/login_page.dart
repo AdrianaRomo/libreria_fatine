@@ -48,22 +48,24 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    print(res.body);
     final data = jsonDecode(res.body);
+    print(data);
 
     if (data["success"] == true) {
       final user = data["user"];
-      final userId = int.parse(user["id"].toString());
+      final userId = int.parse(user["user_id"].toString());
 
       await AuthService.saveSession(
-        id: user["id"].toString(),
-        name: user["name"],
+        id: user["user_id"].toString(),
+        name: user["names"],
         email: user["email"].toString(),
         hasLocation: user["has_location"] == 1,
       );
 
       // Ver si tiene ubicación
       if (user["has_location"] == 0) {
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => LocationTabsPage(userId: userId),

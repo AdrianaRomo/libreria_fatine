@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:libreria_fatine/models/book.dart';
 
 
-class CartModel extends ChangeNotifier {
+class BUnityModel extends ChangeNotifier {
   final List<Book> _items = [];
 
   List<Book> get items => _items;

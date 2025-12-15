@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = ["Drama y Romance", "Autobiografía", "Epopeya", "Fantasía"];
+    final categories = ["Drama y Romance", "Autobiografía", "Epopeya", "Ficción Historica", "Ficcion Gotica", "Ficción Gotica", "Historia", "Horror", "Juvenil", "Novela Histórica", "Novela Mágica", "Romance","Fantasía"];
 
     return Scaffold(
       appBar: AppBar(

@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import '/services/location_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '/services/auth_service.dart';
 
 class AddLocationPage extends StatefulWidget {
   final int userId;
+  final VoidCallback onSaved;
 
-  const AddLocationPage({super.key, required this.userId});
+  const AddLocationPage({
+    super.key,
+    required this.userId,
+    required this.onSaved,
+  });
 
   @override
   State<AddLocationPage> createState() => _AddLocationPageState();
 }
 
+
 class _AddLocationPageState extends State<AddLocationPage> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-
-  // GPS (luego lo cambias por geolocator)
-  double lat = 19.4326;
-  double lng = -99.1332;
 
   // Controllers
   final streetCtrl = TextEditingController();
@@ -27,40 +32,73 @@ class _AddLocationPageState extends State<AddLocationPage> {
   final referenceCtrl = TextEditingController();
 
   Future<void> saveLocation() async {
-    if (!_formKey.currentState!.validate()) return;
+    final street = streetCtrl.text.trim();
+    final number = numberCtrl.text.trim();
+    final colony = colonyCtrl.text.trim();
+    final city = cityCtrl.text.trim();
+    final postal = postalCtrl.text.trim();
+    final reference = referenceCtrl.text.trim();
+
+    if (street.isEmpty ||
+        number.isEmpty ||
+        colony.isEmpty ||
+        city.isEmpty ||
+        postal.isEmpty ||
+        reference.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Completa todos los campos")),
+      );
+      return;
+    }
 
     setState(() => loading = true);
 
-    final addressData = {
-      'street': streetCtrl.text,
-      'number': numberCtrl.text,
-      'colony': colonyCtrl.text,
-      'city': cityCtrl.text,
-      'postal_code': postalCtrl.text,
-      'reference': referenceCtrl.text,
-    };
+    // 🔥 AQUÍ ESTÁ LA CLAVE
+    final int? userId = await AuthService.getUserId();
 
-    final success = await LocationService.saveLocation(
-      widget.userId,
-      lat,
-      lng,
+    if (userId == null) {
+      setState(() => loading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Sesión no válida")),
+      );
+      return;
+    }
 
+    final res = await http.post(
+      Uri.parse("http://192.168.1.35/api/insert_adresses.php"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        'uid': userId, // ✅ ya es int
+        'street': street,
+        'number': number,
+        'colony': colony,
+        'city': city,
+        'postal': postal,
+        'reference': reference,
+      }),
     );
 
     setState(() => loading = false);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          success ? 'Dirección guardada correctamente' : 'Error al guardar',
-        ),
-      ),
-    );
+    print(res.body);
+    final data = jsonDecode(res.body);
 
-    if (success) {
-      Navigator.pop(context, true);
+    if (data["success"] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(data["message"] ?? "Ubicación registrada exitosamente"),
+        ),
+      );
+      widget.onSaved(); // 🔥 refresca lista
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(data["message"] ?? "Error al registrar")),
+      );
     }
   }
+
 
   @override
   void dispose() {
@@ -132,3 +170,4 @@ class _AddLocationPageState extends State<AddLocationPage> {
     );
   }
 }
+
