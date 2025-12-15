@@ -34,26 +34,29 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => loading = true);
 
     final res = await http.post(
-      Uri.parse("http://192.168.1.35/api/register.php"),
-      body: {
-        "name": name,
+      Uri.parse("http://192.168.1.35/api/create_users.php"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        "names": name,
+        "last_names": lname,
         "email": email,
         "password": pass,
-      },
+      }),
     );
-
     setState(() => loading = false);
 
+    print(res.body);
     final data = jsonDecode(res.body);
 
     if (data["success"] == true) {
-      final user = data["user"];
-      final userId = int.parse(user["id"].toString());
+      final userId = int.parse(data["user_id"].toString());
 
       await AuthService.saveSession(
-        id: user["id"].toString(),
-        name: user["name"],
-        email: user["email"],
+        id: userId.toString(),
+        name: name,
+        email: email,
         hasLocation: false,
       );
 
@@ -87,6 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 12),
             TextField(
               controller: lnameCtrl,
               decoration: const InputDecoration(

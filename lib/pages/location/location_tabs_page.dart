@@ -2,10 +2,26 @@ import 'package:flutter/material.dart';
 import 'locations_list_page.dart';
 import 'add_location_page.dart';
 
-class LocationTabsPage extends StatelessWidget {
+class LocationTabsPage extends StatefulWidget {
   final int userId;
 
-  const LocationTabsPage({super.key, required this.userId});
+  const LocationTabsPage({
+    super.key,
+    required this.userId,
+  });
+
+  @override
+  State<LocationTabsPage> createState() => _LocationTabsPageState();
+}
+
+class _LocationTabsPageState extends State<LocationTabsPage> {
+  int refreshKey = 0;
+
+  void refreshLocations() {
+    setState(() {
+      refreshKey++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +29,7 @@ class LocationTabsPage extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.yellow[700], // Amarillo abeja 🐝
+          backgroundColor: Colors.yellow[700],
           foregroundColor: Colors.black,
           title: const Text("Mis ubicaciones"),
           bottom: const TabBar(
@@ -25,8 +41,15 @@ class LocationTabsPage extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            LocationsListPage(userId: userId),
-            AddLocationPage(userId: userId),
+            // ✅ SOLO selecciona ubicación
+            LocationsListPage(
+              key: ValueKey(refreshKey),
+              userId: widget.userId,
+            ),
+            AddLocationPage(
+              userId: widget.userId,
+              onSaved: refreshLocations,
+            ),
           ],
         ),
       ),

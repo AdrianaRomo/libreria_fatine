@@ -5,6 +5,7 @@ import 'package:libreria_fatine/models/cart.dart';
 import 'package:libreria_fatine/pages/login_page.dart';
 import 'package:libreria_fatine/services/auth_service.dart';
 import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
+import 'package:libreria_fatine/models/book.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -72,6 +73,7 @@ class CartPage extends StatelessWidget {
           ),
           onPressed: () async {
             final userId = await AuthService.getUserId();
+            final Book book;
 
             // Si no está logueado
             if (userId == null) {

@@ -1,31 +1,47 @@
 class Book {
+  final int id;
   final String title;
   final String author;
-  final String image;
-  final String price;
   final String category;
-  final String format;
+  final String image;
   final String description;
+  final double price;
+  final int qty;
+  final String year;
 
   Book({
+    required this.id,
     required this.title,
     required this.author,
-    required this.image,
-    required this.price,
     required this.category,
-    required this.format,
+    required this.image,
     required this.description,
+    required this.price,
+    required this.qty,
+    required this.year,
   });
 
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
-      title: json['title'] ?? '',
-      author: json['author'] ?? '',
-      image: json['image'] ?? '',
-      price: json['price']?.toString() ?? '0',
-      category: json['category'] ?? '',
-      format: json['format'] ?? '',
-      description: json['description'] ?? '',
+      id: int.parse(json['id'].toString()),
+      title: json['title']?.toString().trim() ?? '',
+      author: json['author']?.toString().trim() ?? '',
+      category: json['category']?.toString().trim() ?? '',
+      image: _cleanImage(json['image']),
+      description: json['description']?.toString() ?? '',
+      price: double.parse(json['price'].toString()),
+      qty: int.parse(json['qty'].toString()),
+      year: json['year_of_publication']?.toString() ?? '',
     );
+  }
+
+  // 🔥 LIMPIA COMILLAS Y BASURA
+  static String _cleanImage(dynamic img) {
+    if (img == null) return '';
+    return img
+        .toString()
+        .replaceAll('"', '')
+        .replaceAll("'", '')
+        .trim();
   }
 }

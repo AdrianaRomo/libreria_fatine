@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
 import 'package:libreria_fatine/services/auth_service.dart';
 import 'package:libreria_fatine/models/cart.dart';
+import 'package:libreria_fatine/models/BUnity.dart';
 import 'package:libreria_fatine/pages/login_page.dart';
+import '../models/book.dart';
 
 import '../models/book.dart';
 
@@ -116,51 +118,66 @@ class BookDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                        onPressed: () async {
-                          final userId = await AuthService.getUserId();
+                      onPressed: () async {
+                        final userId = await AuthService.getUserId();
 
-                          // Si no está logueado
-                          if (userId == null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const LoginPage(fromCart: true),
-                              ),
-                            );
-                            return;
-                          }
-
-                          //Ir a la pantalla de direcciones
-                          final selectedLocation = await Navigator.push(
+                        // 1️⃣ Si no está logueado
+                        if (userId == null) {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => LocationTabsPage(userId: userId),
+                              builder: (_) => const LoginPage(fromCart: true),
                             ),
                           );
+                          return;
+                        }
 
-                          // Si no seleccionó nada
-                          if (selectedLocation == null) return;
+                        // 2️⃣ Elegir ubicación
+                        final selectedLocation = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => LocationTabsPage(
+                              userId: userId// 👈 IMPORTANTE
+                            ),
+                          ),
+                        );
 
-                          // Confirmar compra
+                        if (selectedLocation == null) return;
+
+                        // 3️⃣ Comprar 1 libro (BACKEND)
+                        final result = await AuthService.purchaseSingleBook(
+                          userId: userId,
+                          bookId: book.id,
+                          locationId: selectedLocation.id,
+                        );
+
+                        // 4️⃣ Resultado
+                        if (result.success) {
                           showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
                               title: const Text('Compra completada'),
                               content: Text(
-                                'Libros: ${book.title}\n'
+                                'Libro: ${book.title}\n'
                                     'Total: \$${book.price}',
                               ),
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    // carrito
+                                    Navigator.pop(context); // dialog
+                                    Navigator.pop(context); // volver
                                   },
                                   child: const Text('OK'),
                                 ),
                               ],
                             ),
                           );
-                        },
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result.message)),
+                          );
+                        }
+                      },
                       child: const Text(
                         "Comprar ahora",
                         style: TextStyle(fontSize: 20, color: Colors.white),

@@ -3,27 +3,37 @@ import 'package:http/http.dart' as http;
 import '../models/location_model.dart';
 
 class LocationService {
-  static const String baseUrl = "http://192.168.1.35"; // cambia TU_IP
+  static const String baseUrl = "http://192.168.1.35/api"; // cambia TU_IP
 
   static Future<List<LocationModel>> getUserLocations(int userId) async {
     final response = await http.post(
       Uri.parse("$baseUrl/get_locations.php"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"user_id": userId}),
+      body: jsonEncode({"uid": userId}),
     );
 
-    final List data = jsonDecode(response.body);
-    return data.map((e) => LocationModel.fromJson(e)).toList();
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data.map((e) => LocationModel.fromJson(e)).toList();
+    } else {
+      return [];
+    }
   }
 
-  static Future<bool> saveLocation(int userId, double lat, double lng) async {
+  static Future<bool> saveLocation(int userId, String street, int number, String colony, String city, int postal, String reference) async {
     final response = await http.post(
       Uri.parse("$baseUrl/save_location.php"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
-        "user_id": userId,
-        "lat": lat,
-        "lng": lng,
+        'street': street,
+        'number': number,
+        'colony': colony,
+        'city': city,
+        'postal_code': postal,
+        'reference': reference,
       }),
     );
 
