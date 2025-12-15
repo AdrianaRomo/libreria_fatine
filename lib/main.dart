@@ -10,6 +10,7 @@ import 'pages/cart_page.dart';
 import 'package:http/http.dart' as http;
 import 'services/auth_service.dart';
 import 'pages/login_page.dart';
+import '/config/api_config.dart';
 
 void main() {
   runApp(
@@ -57,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<List<Book>> loadBooks() async {
-    final url = Uri.parse("http://192.168.1.35/api/api.php");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api.php");
 
     final response = await http.get(url);
 

@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '/config/api_config.dart';
 
 class PurchaseResponse {
   final bool success;
@@ -10,7 +11,6 @@ class PurchaseResponse {
 }
 
 class AuthService {
-  static const String baseUrl = "http://192.168.1.35/api"; // cambia TU_IP
   static const String keyUserId = "user_id";
   static const String keyUserName = "user_name";
   static const String keyUserEmail = "user_email";
@@ -54,7 +54,7 @@ class AuthService {
     if (userId == null) return false;
 
     final response = await http.post(
-      Uri.parse("$baseUrl/get_locations.php"),
+      Uri.parse("${ApiConfig.baseUrl}/get_locations.php"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"user_id": userId}),
     );
@@ -86,29 +86,26 @@ class AuthService {
     required int bookId,
     required int locationId,
   }) async {
-    try {
-      final response = await http.post(
-        Uri.parse("$baseUrl/purchase_book.php"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "user_id": userId,
-          "book_id": bookId,
-          "quantity": 1, // 👈 SIEMPRE 1
-          "location_id": locationId,
-        }),
-      );
 
-      final data = jsonDecode(response.body);
+    final url = Uri.parse(
+      "${ApiConfig.baseUrl}/purchase_book.php",
+    );
 
-      return PurchaseResponse(
-        success: data['success'] ?? false,
-        message: data['message'] ?? 'Error desconocido',
-      );
-    } catch (e) {
-      return PurchaseResponse(
-        success: false,
-        message: "Error: $e",
-      );
-    }
+    final res = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "user_id": userId,
+        "book_id": bookId,
+        "quantity": 1,
+        "location_id": locationId,
+      }),
+    );
+
+    final data = jsonDecode(res.body);
+    return PurchaseResponse(
+      success: data['success'],
+      message: data['message'],
+    );
   }
 }

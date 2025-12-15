@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
 import 'location/location_tabs_page.dart';
+import '/config/api_config.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -34,7 +35,7 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => loading = true);
 
     final res = await http.post(
-      Uri.parse("http://192.168.1.35/api/create_users.php"),
+      Uri.parse("${ApiConfig.baseUrl}/create_users.php"),
       headers: {
         "Content-Type": "application/json",
       },

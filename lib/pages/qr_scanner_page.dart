@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import '/config/api_config.dart';
 import 'book_detail.dart';
 import '/models/book.dart';
 
@@ -17,22 +17,16 @@ class _QRScannerPageState extends State<QRScannerPage> {
   bool scanned = false;
 
   Future<Book?> fetchBookById(String id) async {
-    final url = Uri.parse("http://192.168.1.35/api/query_book.php?id=$id");
+    final url = Uri.parse("${ApiConfig.baseUrl}/query_book.php?id=$id");
 
     final res = await http.get(url);
 
-    print("URL: $url");
-    print("STATUS: ${res.statusCode}");
-    print("BODY: ${res.body}");
-
     if (res.statusCode == 200) {
       final data = jsonDecode(res.body);
-
       if (data["success"] == true) {
         return Book.fromJson(data["book"]);
       }
     }
-
     return null;
   }
 

@@ -3,6 +3,7 @@ import '/services/location_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
+import '/config/api_config.dart';
 
 class AddLocationPage extends StatefulWidget {
   final int userId;
@@ -21,6 +22,7 @@ class AddLocationPage extends StatefulWidget {
 
 class _AddLocationPageState extends State<AddLocationPage> {
   final _formKey = GlobalKey<FormState>();
+
   bool loading = false;
 
   // Controllers
@@ -65,7 +67,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
     }
 
     final res = await http.post(
-      Uri.parse("http://192.168.1.35/api/insert_adresses.php"),
+      Uri.parse("${ApiConfig.baseUrl}/insert_adresses.php"),
       headers: {
         "Content-Type": "application/json",
       },
