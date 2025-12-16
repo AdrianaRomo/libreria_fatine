@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Future<List<Book>> loadBooks() async {
-    final url = Uri.parse("http://192.168.1.35/api/api.php");
+    final url = Uri.parse("${ApiConfig.baseUrl}/api.php");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

@@ -9,7 +9,7 @@ class LocationService {
     final res = await http.post(
       Uri.parse("${ApiConfig.baseUrl}/get_locations.php"),
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"user_id": userId}),
+      body: jsonEncode({"uid": userId}),
     );
 
     final List data = jsonDecode(res.body);
