@@ -4,9 +4,9 @@ class ApiConfig {
   static String get baseUrl {
     // Android emulator
     if (Platform.isAndroid) {
-      return "http://25.3.18.26/api";
+      return "http://192.168.1.77/api";
     }
     // Physical device / others
-    return "http://192.168.1.35/api";
+    return "http://192.168.1.77/api";
   }
 }
