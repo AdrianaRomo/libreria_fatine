@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 
 class PurchaseResponse {
   final bool success;

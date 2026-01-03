@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import '/models/location_model.dart';
 import '/services/location_service.dart';
+import '/pages/payment/payment_methods_tabs_page.dart';
+import '/models/book.dart';
 
 class LocationsListPage extends StatefulWidget {
   final int userId;
+  final Book book;
 
   const LocationsListPage({
     super.key,
     required this.userId,
+    required this.book,
   });
 
   @override
@@ -24,9 +28,7 @@ class _LocationsListPageState extends State<LocationsListPage> {
   }
 
   void _loadLocations() {
-    setState(() {
-      locationsFuture = LocationService.getUserLocations(widget.userId);
-    });
+    locationsFuture = LocationService.getUserLocations(widget.userId);
   }
 
   @override
@@ -58,17 +60,22 @@ class _LocationsListPageState extends State<LocationsListPage> {
                 final loc = locations[i];
 
                 return ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: Text(loc.street ?? "Ubicación ${loc.id}"),
-                  subtitle: Text(
-                    "${loc.street} #${loc.number}, ${loc.country}",
-                  ),
-                  trailing: loc.isDefault
-                      ? const Icon(Icons.star, color: Colors.orange)
-                      : null,
-                  onTap: () {
-                    // 👇 SOLO DEVUELVE LA UBICACIÓN
-                    Navigator.pop(context, loc);
+                  title: Text(loc.street),
+                  onTap: () async {
+                    final paymentSelected = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PaymentMethodsTabsPage(
+                          userId: widget.userId,
+                          locationId: loc.id,
+                          book: widget.book,
+                        ),
+                      ),
+                    );
+
+                    if (paymentSelected == true) {
+                      Navigator.pop(context, true);
+                    }
                   },
                 );
               },

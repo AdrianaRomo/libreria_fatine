@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
-import 'location/location_tabs_page.dart';
 import 'register_page.dart';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -39,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       "password": pass,
     });
 
+    if (!mounted) return;
     setState(() => isLoading = false);
 
     if (res.statusCode != 200) {
@@ -48,13 +48,10 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    print(res.body);
     final data = jsonDecode(res.body);
-    print(data);
 
     if (data["success"] == true) {
       final user = data["user"];
-      final userId = int.parse(user["user_id"].toString());
 
       await AuthService.saveSession(
         id: user["user_id"].toString(),
@@ -63,21 +60,15 @@ class _LoginPageState extends State<LoginPage> {
         hasLocation: user["has_location"] == 1,
       );
 
-      // Ver si tiene ubicación
-      if (user["has_location"] == 0) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => LocationTabsPage(userId: userId),
-          ),
-        );
-      } else {
-        Navigator.pop(context, true); // ya tenía ubicación
-      }
+      if (!mounted) return;
 
+      // ✅ Login exitoso → regresar
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(data["message"] ?? "Credenciales incorrectas")),
+        SnackBar(
+          content: Text(data["message"] ?? "Credenciales incorrectas"),
+        ),
       );
     }
   }

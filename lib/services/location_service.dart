@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '/models/location_model.dart';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 
 class LocationService {
 

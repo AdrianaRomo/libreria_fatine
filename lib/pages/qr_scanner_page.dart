@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 import 'book_detail.dart';
 import '/models/book.dart';
 
