@@ -5,7 +5,6 @@ import 'package:libreria_fatine/models/cart.dart';
 import 'package:libreria_fatine/pages/login_page.dart';
 import 'package:libreria_fatine/services/auth_service.dart';
 import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
-import 'package:libreria_fatine/models/book.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -71,55 +70,59 @@ class CartPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: () async {
-            final userId = await AuthService.getUserId();
-            final Book book;
+            onPressed: () async {
+              final userId = await AuthService.getUserId();
 
-            // Si no está logueado
-            if (userId == null) {
-              Navigator.push(
+              if (userId == null) {
+                if (!context.mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const LoginPage(fromCart: true),
+                  ),
+                );
+                return;
+              }
+
+              // 🔥 Usamos el primer libro del carrito (por ahora)
+              final firstBook = cart.items.first;
+
+              final purchased = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const LoginPage(fromCart: true),
+                  builder: (_) => LocationTabsPage(
+                    userId: userId,
+                    book: firstBook, // 👈 CLAVE
+                  ),
                 ),
               );
-              return;
-            }
 
-            //Ir a la pantalla de direcciones
-            final selectedLocation = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => LocationTabsPage(userId: userId),
-              ),
-            );
+              if (!context.mounted) return;
 
-            // Si no seleccionó nada
-            if (selectedLocation == null) return;
+              if (purchased == true) {
+                cart.clear();
 
-            // Confirmar compra
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: const Text('Compra completada'),
-                content: Text(
-                  'Libros: ${cart.items.length}\n'
-                      'Dirección: ${selectedLocation['address']}\n'
-                      'Total: \$${cart.totalPrice.toStringAsFixed(2)}',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      cart.clear();
-                      Navigator.of(context).pop(); // dialog
-                      Navigator.of(context).pop(); // carrito
-                    },
-                    child: const Text('OK'),
+                showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    title: const Text('Compra completada'),
+                    content: Text(
+                      'Libros: ${cart.items.length}\n'
+                          'Total: \$${cart.totalPrice.toStringAsFixed(2)}',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context); // dialog
+                          Navigator.pop(context); // carrito
+                        },
+                        child: const Text('OK'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
+                );
+              }
+            },
           child: Text('Pagar (\$${cart.totalPrice.toStringAsFixed(2)})'),
         ),
       ),

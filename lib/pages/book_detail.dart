@@ -4,10 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
 import 'package:libreria_fatine/services/auth_service.dart';
 import 'package:libreria_fatine/models/cart.dart';
-import 'package:libreria_fatine/models/BUnity.dart';
 import 'package:libreria_fatine/pages/login_page.dart';
-import '../models/book.dart';
-
+import '/services/book_service.dart';
 import '../models/book.dart';
 
 class BookDetailPage extends StatelessWidget {
@@ -132,7 +130,6 @@ class BookDetailPage extends StatelessWidget {
                       onPressed: () async {
                         final userId = await AuthService.getUserId();
 
-                        // 1️⃣ Si no está logueado
                         if (userId == null) {
                           Navigator.push(
                             context,
@@ -143,27 +140,19 @@ class BookDetailPage extends StatelessWidget {
                           return;
                         }
 
-                        // 2️⃣ Elegir ubicación
-                        final selectedLocation = await Navigator.push(
+                        final purchased = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => LocationTabsPage(
-                              userId: userId// 👈 IMPORTANTE
+                              userId: userId,
+                              book: book,
                             ),
                           ),
                         );
 
-                        if (selectedLocation == null) return;
+                        if (!context.mounted) return;
 
-                        // 3️⃣ Comprar 1 libro (BACKEND)
-                        final result = await AuthService.purchaseSingleBook(
-                          userId: userId,
-                          bookId: book.id,
-                          locationId: selectedLocation.id,
-                        );
-
-                        // 4️⃣ Resultado
-                        if (result.success) {
+                        if (purchased == true && context.mounted) {
                           showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
@@ -175,17 +164,13 @@ class BookDetailPage extends StatelessWidget {
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pop(context); // dialog
-                                    Navigator.pop(context); // volver
+                                    Navigator.pop(context); // ❌ solo cierra el diálogo
+                                    Navigator.pop(context); // ❌ vuelve atrás, PERO no manda resultado
                                   },
                                   child: const Text('OK'),
                                 ),
                               ],
                             ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result.message)),
                           );
                         }
                       },
@@ -226,12 +211,123 @@ class BookDetailPage extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 30),
+
+                  RelatedBooksSection(book: book),
+
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class RelatedBooksSection extends StatelessWidget {
+  final Book book;
+
+  const RelatedBooksSection({super.key, required this.book});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Book>>(
+      future: BookService.getRelatedBooks(book),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final books = snapshot.data!;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 30),
+              const Text(
+                'Más libros similares',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              SizedBox(
+                height: 230,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: books.length,
+                  itemBuilder: (_, i) {
+                    final b = books[i];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BookDetailPage(book: b),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 140,
+                        margin: const EdgeInsets.only(right: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: CachedNetworkImage(
+                                  imageUrl: b.image,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              book.title,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              book.author,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "\$${book.price}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

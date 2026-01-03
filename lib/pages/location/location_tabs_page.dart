@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'locations_list_page.dart';
 import 'add_location_page.dart';
+import '/models/book.dart';
 
 class LocationTabsPage extends StatefulWidget {
   final int userId;
+  final Book book; // 👈 AÑADIR
 
   const LocationTabsPage({
     super.key,
     required this.userId,
+    required this.book, // 👈 AÑADIR
   });
 
   @override
@@ -41,10 +44,10 @@ class _LocationTabsPageState extends State<LocationTabsPage> {
         ),
         body: TabBarView(
           children: [
-            // ✅ SOLO selecciona ubicación
             LocationsListPage(
               key: ValueKey(refreshKey),
               userId: widget.userId,
+              book: widget.book,
             ),
             AddLocationPage(
               userId: widget.userId,
@@ -52,6 +55,7 @@ class _LocationTabsPageState extends State<LocationTabsPage> {
             ),
           ],
         ),
+
       ),
     );
   }

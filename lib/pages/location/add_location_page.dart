@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '/services/location_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 
 class AddLocationPage extends StatefulWidget {
   final int userId;

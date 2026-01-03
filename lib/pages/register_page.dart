@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '/services/auth_service.dart';
-import 'location/location_tabs_page.dart';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
+import '/core/utils/validators.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -32,13 +32,18 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (!isValidEmail(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Ingresa un correo válido")),
+      );
+      return;
+    }
+
     setState(() => loading = true);
 
     final res = await http.post(
       Uri.parse("${ApiConfig.baseUrl}/create_users.php"),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "names": name,
         "last_names": lname,
@@ -46,9 +51,10 @@ class _RegisterPageState extends State<RegisterPage> {
         "password": pass,
       }),
     );
+
+    if (!mounted) return;
     setState(() => loading = false);
 
-    print(res.body);
     final data = jsonDecode(res.body);
 
     if (data["success"] == true) {
@@ -61,18 +67,17 @@ class _RegisterPageState extends State<RegisterPage> {
         hasLocation: false,
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => LocationTabsPage(userId: userId),
-        ),
-      );
+      if (!mounted) return;
+
+      // ✅ Registro exitoso → regresar
+      Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(data["message"] ?? "Error al registrar")),
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

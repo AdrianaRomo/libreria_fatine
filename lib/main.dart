@@ -10,7 +10,7 @@ import 'pages/cart_page.dart';
 import 'package:http/http.dart' as http;
 import 'services/auth_service.dart';
 import 'pages/login_page.dart';
-import '/config/api_config.dart';
+import '/core/config/api_config.dart';
 import 'pages/book_search_delegate.dart';
 
 
@@ -302,7 +302,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 void _openAccountMenu(BuildContext context) async {
   final userId = await AuthService.getUserId();
-  final userEmail = await AuthService.getUserEmail(); // opcional
   final userName = await AuthService.getUserName();
 
   if (userId == null) {
