@@ -84,7 +84,6 @@ class CartPage extends StatelessWidget {
                 return;
               }
 
-              // 🔥 Usamos el primer libro del carrito (por ahora)
               final firstBook = cart.items.first;
 
               final purchased = await Navigator.push(
@@ -100,15 +99,18 @@ class CartPage extends StatelessWidget {
               if (!context.mounted) return;
 
               if (purchased == true) {
-                cart.clear();
+                final totalBooks = cart.items.length;
+                final totalPrice = cart.totalPrice;
+
+                cart.clear(); // ahora sí
 
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
                     title: const Text('Compra completada'),
                     content: Text(
-                      'Libros: ${cart.items.length}\n'
-                          'Total: \$${cart.totalPrice.toStringAsFixed(2)}',
+                      'Libros: $totalBooks\n'
+                          'Total: \$${totalPrice.toStringAsFixed(2)}',
                     ),
                     actions: [
                       TextButton(

@@ -7,7 +7,7 @@ import '/core/config/api_config.dart';
 
 
 class LoginPage extends StatefulWidget {
-  final bool fromCart; // si viene de intentar comprar
+  final bool fromCart;
   const LoginPage({super.key, this.fromCart = false});
 
   @override
@@ -62,7 +62,6 @@ class _LoginPageState extends State<LoginPage> {
 
       if (!mounted) return;
 
-      // ✅ Login exitoso → regresar
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,7 +103,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
 
-            // 🔹 BOTÓN ENTRAR
             ElevatedButton(
               onPressed: isLoading ? null : loginUser,
               style: ElevatedButton.styleFrom(
@@ -120,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 16),
 
-            // 🔹 CREAR CUENTA
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

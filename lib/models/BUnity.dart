@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:libreria_fatine/models/book.dart';
 
-
 class BUnityModel extends ChangeNotifier {
   final List<Book> _items = [];
 

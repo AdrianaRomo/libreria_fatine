@@ -69,7 +69,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
       if (!mounted) return;
 
-      // ✅ Registro exitoso → regresar
       Navigator.pop(context, true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,7 +1,7 @@
 class PaymentMethod {
   final int id;
   final int userId;
-  final String brand; // visa | mastercard | amex
+  final String brand;
   final String last4;
 
   PaymentMethod({

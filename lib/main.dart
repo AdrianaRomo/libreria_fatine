@@ -2,17 +2,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+import '/core/config/api_config.dart';
+
 import 'models/cart.dart';
 import 'models/book.dart';
+
 import 'pages/book_detail.dart';
 import 'pages/qr_scanner_page.dart';
 import 'pages/cart_page.dart';
-import 'package:http/http.dart' as http;
-import 'services/auth_service.dart';
 import 'pages/login_page.dart';
-import '/core/config/api_config.dart';
 import 'pages/book_search_delegate.dart';
 
+import 'services/auth_service.dart';
 
 void main() {
   runApp(
