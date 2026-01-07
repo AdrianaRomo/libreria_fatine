@@ -54,7 +54,6 @@ class _AddLocationPageState extends State<AddLocationPage> {
 
     setState(() => loading = true);
 
-    // 🔥 AQUÍ ESTÁ LA CLAVE
     final int? userId = await AuthService.getUserId();
 
     if (userId == null) {

@@ -37,6 +37,8 @@ class _LoginPageState extends State<LoginPage> {
       "email": email,
       "password": pass,
     });
+    
+    print(res);
 
     if (!mounted) return;
     setState(() => isLoading = false);

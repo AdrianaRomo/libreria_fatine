@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:libreria_fatine/models/book.dart';
-import 'package:libreria_fatine/models/cart.dart';
-import 'package:libreria_fatine/pages/login_page.dart';
-import 'package:libreria_fatine/services/auth_service.dart';
-import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
+import '/models/book.dart';
+import '/models/cart.dart';
+import '/pages/login_page.dart';
+import '/services/auth_service.dart';
+import '/pages/location/location_tabs_page.dart';
+import '/pages/book_detail.dart';
 
 
 class CartPage extends StatelessWidget {
@@ -41,6 +42,13 @@ class CartPage extends StatelessWidget {
             ),
             title: Text(book.title),
             subtitle: Text('\$${book.price}'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => BookDetailPage(book: book)),
+              );
+            },
             trailing: IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () {
@@ -91,7 +99,7 @@ class CartPage extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => LocationTabsPage(
                     userId: userId,
-                    book: firstBook, // 👈 CLAVE
+                    book: firstBook,
                   ),
                 ),
               );
@@ -102,7 +110,7 @@ class CartPage extends StatelessWidget {
                 final totalBooks = cart.items.length;
                 final totalPrice = cart.totalPrice;
 
-                cart.clear(); // ahora sí
+                cart.clear();
 
                 showDialog(
                   context: context,
@@ -115,8 +123,8 @@ class CartPage extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pop(context); // dialog
-                          Navigator.pop(context); // carrito
+                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         },
                         child: const Text('OK'),
                       ),
@@ -131,6 +139,3 @@ class CartPage extends StatelessWidget {
     );
   }
 }
-
-
-
