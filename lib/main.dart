@@ -76,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final List<dynamic> data = jsonDecode(response.body);
       final books = data.map((e) => Book.fromJson(e)).toList();
 
-      // 🔥 AQUÍ SE LLENA allBooks
       allBooks = books;
 
       return books;
@@ -314,7 +313,7 @@ void _openAccountMenu(BuildContext context) async {
         builder: (_) => const LoginPage(fromCart: true),
       ),
     );
-    return; // ⛔ importante: no seguir
+    return; //
   }
 
   showModalBottomSheet(

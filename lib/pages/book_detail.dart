@@ -298,24 +298,22 @@ class RelatedBooksSection extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              book.title,
+                              b.title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 4),
+
                             Text(
-                              book.author,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey),
+                              b.author,
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 6),
+
                             Text(
-                              "\$${book.price}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
+                              "\$${b.price}",
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
