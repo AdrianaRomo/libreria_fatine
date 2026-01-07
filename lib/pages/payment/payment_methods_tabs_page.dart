@@ -55,7 +55,7 @@ class _PaymentMethodsTabsPageState
         ),
         body: TabBarView(
           children: [
-            // 🟢 LISTA DE TARJETAS
+            //  LISTA DE TARJETAS
             PaymentMethodsListPage(
               key: ValueKey(refreshKey),
               userId: widget.userId,

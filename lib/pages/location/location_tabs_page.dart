@@ -5,12 +5,12 @@ import '/models/book.dart';
 
 class LocationTabsPage extends StatefulWidget {
   final int userId;
-  final Book book; // 👈 AÑADIR
+  final Book book; //  AÑADIR
 
   const LocationTabsPage({
     super.key,
     required this.userId,
-    required this.book, // 👈 AÑADIR
+    required this.book, //  AÑADIR
   });
 
   @override
