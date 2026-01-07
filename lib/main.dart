@@ -2,19 +2,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+import '/core/config/api_config.dart';
+
 import 'models/cart.dart';
 import 'models/book.dart';
+
 import 'pages/book_detail.dart';
 import 'pages/qr_scanner_page.dart';
 import 'pages/cart_page.dart';
-import 'package:http/http.dart' as http;
-import 'services/auth_service.dart';
 import 'pages/login_page.dart';
-import '/core/config/api_config.dart';
 import 'pages/book_search_delegate.dart';
 import 'pages/test_lottie.dart';
 import 'pages/splash_screen.dart';
 
+import 'services/auth_service.dart';
 
 void main() {
   runApp(
@@ -77,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final List<dynamic> data = jsonDecode(response.body);
       final books = data.map((e) => Book.fromJson(e)).toList();
 
-      // 🔥 AQUÍ SE LLENA allBooks
       allBooks = books;
 
       return books;
@@ -94,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow[700], // Amarillo abeja 🐝
+        backgroundColor: Colors.yellow[700],
         foregroundColor: Colors.black,
         title: const Text(
           "Librería Abejita",
@@ -147,8 +149,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.shopping_cart_outlined),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/cart');
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(context, '/cart');
+
+                      if (result == true) {
+                        setState(() {
+                          booksFuture = loadBooks();
+                        });
+                      }
                     },
                   ),
                   // Contador del carrito
@@ -220,12 +228,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, i) {
                         final book = filteredBooks[i];
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => BookDetailPage(book: book)),
+                                builder: (_) => BookDetailPage(book: book),
+                              ),
                             );
+
+                            if (result == true) {
+                              setState(() {
+                                booksFuture = loadBooks();
+                              });
+                            }
                           },
                           child: Container(
                             width: 180,
@@ -315,7 +330,7 @@ void _openAccountMenu(BuildContext context) async {
         builder: (_) => const LoginPage(fromCart: true),
       ),
     );
-    return; // ⛔ importante: no seguir
+    return; //
   }
 
   showModalBottomSheet(

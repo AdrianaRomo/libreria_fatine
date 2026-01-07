@@ -20,9 +20,7 @@ class PaymentMethodsTabsPage extends StatefulWidget {
       _PaymentMethodsTabsPageState();
 }
 
-class _PaymentMethodsTabsPageState
-    extends State<PaymentMethodsTabsPage> {
-
+class _PaymentMethodsTabsPageState extends State<PaymentMethodsTabsPage> {
   int refreshKey = 0;
 
   void refreshPayments() {
@@ -55,7 +53,7 @@ class _PaymentMethodsTabsPageState
         ),
         body: TabBarView(
           children: [
-            //  LISTA DE TARJETAS
+            // LISTA DE TARJETAS
             PaymentMethodsListPage(
               key: ValueKey(refreshKey),
               userId: widget.userId,
@@ -63,7 +61,7 @@ class _PaymentMethodsTabsPageState
               book: widget.book,
             ),
 
-            // 🟢 AGREGAR TARJETA
+            // AGREGAR TARJETA
             AddPaymentMethodPage(
               userId: widget.userId,
               onSaved: refreshPayments,

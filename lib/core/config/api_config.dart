@@ -2,7 +2,6 @@ import 'dart:io';
 
 class ApiConfig {
   static String get baseUrl {
-    // Android emulator
     if (Platform.isAndroid) {
       return "http://192.168.1.77/api";
     }

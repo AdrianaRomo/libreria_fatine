@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
-import 'package:libreria_fatine/pages/location/location_tabs_page.dart';
-import 'package:libreria_fatine/services/auth_service.dart';
-import 'package:libreria_fatine/models/cart.dart';
-import 'package:libreria_fatine/pages/login_page.dart';
+
+import '/models/cart.dart';
+import '/models/book.dart';
+
+import '/pages/login_page.dart';
+import '/pages/location/location_tabs_page.dart';
+
+import '/services/auth_service.dart';
 import '/services/book_service.dart';
-import '../models/book.dart';
 
 class BookDetailPage extends StatelessWidget {
   final Book book;
@@ -27,7 +30,6 @@ class BookDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // ---------- IMAGEN PRINCIPAL ----------
             Hero(
               tag: book.title,
               child: CachedNetworkImage(
@@ -97,7 +99,6 @@ class BookDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // Título descripción
                   const Text(
                     "Descripción del producto",
                     style: TextStyle(
@@ -108,7 +109,6 @@ class BookDetailPage extends StatelessWidget {
 
                   const SizedBox(height: 8),
 
-                  // Descripción
                   Text(
                     book.description,
                     style: const TextStyle(fontSize: 16, height: 1.4),
@@ -164,8 +164,8 @@ class BookDetailPage extends StatelessWidget {
                               actions: [
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pop(context); // ❌ solo cierra el diálogo
-                                    Navigator.pop(context); // ❌ vuelve atrás, PERO no manda resultado
+                                    Navigator.pop(context);
+                                    Navigator.pop(context, true);
                                   },
                                   child: const Text('OK'),
                                 ),
@@ -298,24 +298,22 @@ class RelatedBooksSection extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              book.title,
+                              b.title,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 14),
                             ),
-                            const SizedBox(height: 4),
+
                             Text(
-                              book.author,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey),
+                              b.author,
+                              style: const TextStyle(fontSize: 12, color: Colors.grey),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(height: 6),
+
                             Text(
-                              "\$${book.price}",
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
+                              "\$${b.price}",
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),

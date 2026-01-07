@@ -35,7 +35,6 @@ class Book {
     );
   }
 
-  //  LIMPIA COMILLAS Y BASURA
   static String _cleanImage(dynamic img) {
     if (img == null) return '';
     return img

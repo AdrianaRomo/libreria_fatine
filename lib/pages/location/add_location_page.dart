@@ -54,7 +54,6 @@ class _AddLocationPageState extends State<AddLocationPage> {
 
     setState(() => loading = true);
 
-    // 🔥 AQUÍ ESTÁ LA CLAVE
     final int? userId = await AuthService.getUserId();
 
     if (userId == null) {
@@ -71,7 +70,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
         "Content-Type": "application/json",
       },
       body: jsonEncode({
-        'uid': userId, // ✅ ya es int
+        'uid': userId,
         'street': street,
         'number': number,
         'colony': colony,
@@ -92,7 +91,7 @@ class _AddLocationPageState extends State<AddLocationPage> {
           content: Text(data["message"] ?? "Ubicación registrada exitosamente"),
         ),
       );
-      widget.onSaved(); // 🔥 refresca lista
+      widget.onSaved();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(data["message"] ?? "Error al registrar")),
