@@ -14,6 +14,8 @@ import 'pages/qr_scanner_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/login_page.dart';
 import 'pages/book_search_delegate.dart';
+import 'pages/test_lottie.dart';
+import 'pages/splash_screen.dart';
 
 import 'services/auth_service.dart';
 
@@ -37,7 +39,9 @@ class LibreriaFatineApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
+
+
       routes: {
         '/cart': (_) => const CartPage(),
       },
