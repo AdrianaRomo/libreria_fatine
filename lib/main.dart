@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow[700], // Amarillo abeja 🐝
+        backgroundColor: Colors.yellow[700],
         foregroundColor: Colors.black,
         title: const Text(
           "Librería Abejita",
@@ -145,8 +145,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.shopping_cart_outlined),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/cart');
+                    onPressed: () async {
+                      final result = await Navigator.pushNamed(context, '/cart');
+
+                      if (result == true) {
+                        setState(() {
+                          booksFuture = loadBooks();
+                        });
+                      }
                     },
                   ),
                   // Contador del carrito
@@ -218,12 +224,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, i) {
                         final book = filteredBooks[i];
                         return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            final result = await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => BookDetailPage(book: book)),
+                                builder: (_) => BookDetailPage(book: book),
+                              ),
                             );
+
+                            if (result == true) {
+                              setState(() {
+                                booksFuture = loadBooks();
+                              });
+                            }
                           },
                           child: Container(
                             width: 180,

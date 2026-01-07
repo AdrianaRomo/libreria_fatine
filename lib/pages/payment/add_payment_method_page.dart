@@ -39,7 +39,9 @@ class _AddPaymentMethodPageState extends State<AddPaymentMethodPage> {
       );
 
       if (!mounted) return;
-      Navigator.pop(context, true);
+      Navigator.pop(context, {
+        "cardSaved": true,
+      });
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

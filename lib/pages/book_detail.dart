@@ -165,7 +165,7 @@ class BookDetailPage extends StatelessWidget {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Navigator.pop(context);
+                                    Navigator.pop(context, true);
                                   },
                                   child: const Text('OK'),
                                 ),
